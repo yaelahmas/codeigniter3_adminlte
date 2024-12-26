@@ -130,11 +130,12 @@ class User extends MY_Controller
 					if ($this->upload->do_upload('image')) {
 						$data = [
 							'name' 			=> $this->input->post('name'),
+							'username' 		=> substr($this->input->post('email'), 0, strpos($this->input->post('email'), '@')),
 							'email' 		=>  strtolower($this->security->xss_clean($this->input->post('email'))),
 							'password' 		=>  password_hash('password', PASSWORD_DEFAULT),
 							'image' 		=> $this->upload->data('file_name'),
 							'role_id' 		=> $this->input->post('role_id'),
-							'is_verified'	=> 1,
+							'verified'		=> 1,
 						];
 					} else {
 						echo json_encode(['statusCode' => 500, 'message' => 'Something went wrong!']);
@@ -142,10 +143,11 @@ class User extends MY_Controller
 				} else {
 					$data = [
 						'name' 			=> $this->input->post('name'),
+						'username' 		=> substr($this->input->post('email'), 0, strpos($this->input->post('email'), '@')),
 						'email' 		=>  strtolower($this->security->xss_clean($this->input->post('email'))),
 						'password' 		=>  password_hash('password', PASSWORD_DEFAULT),
 						'role_id' 		=> $this->input->post('role_id'),
-						'is_verified'	=> 1,
+						'verified'		=> 1,
 					];
 				}
 
@@ -174,7 +176,7 @@ class User extends MY_Controller
 				echo json_encode(['statusCode' => 400, 'message' => $this->form_validation->error_array()]);
 			} else {
 				if (!empty($_FILES['image']['name'])) {
-					$user = $this->user->get($this->input->post('user_id'));
+					$user = $this->user->find($this->input->post('user_id'));
 					if ($user['image'] != 'default.png') {
 						unlink('./public/images/user/' . $user['image']);
 					}
@@ -217,7 +219,7 @@ class User extends MY_Controller
 				echo json_encode(['statusCode' => 403, 'message' => 'Access Denied']);
 				exit;
 			}
-			$user = $this->user->get($this->input->get('user_id'));
+			$user = $this->user->find($this->input->get('user_id'));
 			if ($user['image'] != 'default.png') {
 				unlink('./public/images/user/' . $user['image']);
 			}

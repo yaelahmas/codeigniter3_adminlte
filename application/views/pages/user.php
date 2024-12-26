@@ -55,8 +55,10 @@
 					<div class="col-md-5">
 						<div class="form-group">
 							<label for="image">Image</label>
-							<input type="file" id="image" class="form-control image" name="image">
-							<div class="modal-image-preview" style="margin-top: 20px"></div>
+							<input type="file" class="d-none" style="opacity: 0;" name="image" id="image">
+							<a href="javascript:void(0);" title="Change photo" onclick="event.preventDefault();document.getElementById('image').click();">
+								<div class="modal-image-preview"></div>
+							</a>
 						</div>
 					</div>
 					<div class="col-md-7">
@@ -94,7 +96,7 @@
 	var url;
 
 	$(document).ready(function() {
-		$(document).on('change', '.image', function() {
+		$(document).on('change', '#image', function() {
 			previewImageModal(this);
 		});
 
@@ -120,11 +122,12 @@
 			destroy: true,
 		});
 
+		getSelectDataRole();
+
 		$(document).on('click', '.btn-create', function(e) {
 			e.preventDefault();
 			method = 'create';
 
-			getSelectDataRole();
 			$('#form-user')[0].reset();
 			$('.form-group').removeClass('has-error');
 			$('.help-block').empty();
@@ -132,14 +135,13 @@
 			$('#modal-form-user').modal('show');
 			$('.modal-title').text('Add New User');
 			$('.modal-button').text('Save Data');
-			$('.modal-image-preview').html(``);
+			$('.modal-image-preview').html(`<img style="width: 100%" src="<?= base_url('public/images/default.png'); ?>"/>`);
 		});
 
 		$(document).on('click', '.btn-edit', function(e) {
 			e.preventDefault();
 			method = 'update';
 
-			getSelectDataRole();
 			$('.form-group').removeClass('has-error');
 			$('.help-block').empty();
 
